@@ -296,6 +296,11 @@ func CreateCustomDisks(
 ) diag.Diagnostics {
 	for iface, disk := range storageDevices {
 		if disk != nil && disk.FileID != nil && *disk.FileID != "" {
+			// We're importing them instead via the API.
+			if strings.HasSuffix(*disk.FileID, ".qcow2") || strings.HasSuffix(*disk.FileID, ".raw") {
+				continue
+			}
+
 			// only custom disks with defined file ID
 			err := createCustomDisk(ctx, client, nodeName, vmID, iface, *disk)
 			if err != nil {
@@ -571,8 +576,8 @@ func Update(
 
 			switch {
 			case currentDisks[iface] == nil && disk != nil:
-				if disk.FileID != nil && *disk.FileID != "" {
-					// only disks with defined file ID are custom image disks that need to be created via import.
+				if disk.FileID != nil && *disk.FileID != "" && !(strings.HasSuffix(*disk.FileID, ".qcow2") || strings.HasSuffix(*disk.FileID, ".raw")) {
+					// only disks with defined file ID not ending in  ".qcow2" or ".raw" are custom image disks that need to be created via import.
 					err := createCustomDisk(ctx, client, nodeName, vmID, iface, *disk)
 					if err != nil {
 						return false, fmt.Errorf("creating custom disk: %w", err)

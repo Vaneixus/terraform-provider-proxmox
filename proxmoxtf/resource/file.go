@@ -553,7 +553,7 @@ func fileCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	}
 
 	switch *contentType {
-	case "iso", "vztmpl":
+	case "iso", "vztmpl", "import":
 		_, err = capi.Node(nodeName).Storage(datastoreID).APIUpload(
 			ctx, request, config.TempDir(),
 		)

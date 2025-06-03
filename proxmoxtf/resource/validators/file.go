@@ -23,6 +23,7 @@ func ContentType() schema.SchemaValidateDiagFunc {
 		"backup",
 		"iso",
 		"snippets",
+		"import",
 		"vztmpl",
 	}, false))
 }
